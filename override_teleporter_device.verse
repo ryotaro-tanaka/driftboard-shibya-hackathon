@@ -1,18 +1,5 @@
-
 using { /Fortnite.com/Devices }
 using { /Verse.org/Simulation }
-using { /UnrealEngine.com/Temporary/Diagnostics }
-using { /Verse.org/Colors/NamedColors }
-using { /Verse.org/Verse }
-using { /Fortnite.com/Playspaces }
-using { /Fortnite.com/Characters }
-using { /UnrealEngine.com/Temporary/SpatialMath }
-
-# See https://dev.epicgames.com/documentation/en-us/uefn/create-your-own-device-in-verse for how to create a verse device.
-
-position_info := class:
-    Vector: vector3
-    Rotation: rotation
 
 # 車両を含むテレポート
 # 車両を破壊してテレポート先の車両に乗り換える方法を使用
