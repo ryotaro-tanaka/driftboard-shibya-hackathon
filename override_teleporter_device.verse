@@ -30,7 +30,12 @@ override_teleporter_device := class(creative_device):
     @editable
     driver: player_spawner_device = player_spawner_device{}
 
-    
+    @editable
+    vehicleSpawner1: vehicle_spawner_driftboard_device = vehicle_spawner_driftboard_device{}
+
+    @editable
+    vehicleSpawner2: vehicle_spawner_driftboard_device = vehicle_spawner_driftboard_device{}
+
     GetPlayer()<transacts><decides>: fort_character =
         Playspace: fort_playspace = GetPlayspace()
         AllPlayers := Playspace.GetPlayers()
@@ -39,7 +44,6 @@ override_teleporter_device := class(creative_device):
         return MyFortCharacter
     
     GetExitPosition(): position_info =
-        Print("GetExitPosition")
         Trans : transform = teleportExit.GetTransform()
         position_info{
             Vector := vector3{
@@ -50,28 +54,27 @@ override_teleporter_device := class(creative_device):
             Rotation := Trans.Rotation
         }
 
+    # 人を移動させる
     EnterVolume(Agent: agent):void =
-        Print("EnterVolume")
         if (MyPlayer : fort_character = GetPlayer[]) :
-            # CharacterPosition : vector3 = MyPlayer.GetViewLocation()
-            # NewRotation :rotation = MyPlayer.GetViewRotation()
-            # Print("aaa {CharacterPosition}, {NewRotation}")
             ExitPosition : position_info = GetExitPosition()
             if (MyPlayer.TeleportTo[
                 Position := ExitPosition.Vector, 
                 Rotation := ExitPosition.Rotation
             ]):
-            # if (MyPlayer.TeleportTo[
-            #     Position : vector3 = vector3{
-            #         X := CharacterPosition.X,
-            #         Y := CharacterPosition.Y,
-            #         Z := CharacterPosition.Z + 100.0
-            #     },
-            #     Rotation : rotation = NewRotation
-            # ]):
-                Print("done")
+                Print("Teleport Done")
+
+    # 車両を移動させる(車両を破壊)
+    EnterVolume2(Agent: agent):void =
+        vehicleSpawner1.DestroyVehicle()
+    
+    # 用意しておいた２つ目の車両にアサイン
+    ExitVolume(Agent: agent):void =
+        vehicleSpawner2.AssignDriver(Agent)
+        Print("Exitttttttttttttt?")
 
     # Runs when the device is started in a running game
     OnBegin<override>()<suspends>:void=
         Print("Hello, world?", ?Duration:= 10.0, ?Color:= Yellow)
-        teleportVolume.AgentEntersEvent.Subscribe(EnterVolume)
+        teleportVolume.AgentEntersEvent.Subscribe(EnterVolume2)
+        teleportVolume.AgentExitsEvent.Subscribe(ExitVolume)
